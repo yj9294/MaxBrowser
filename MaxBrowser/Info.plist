@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1172475496758800</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
+	<true/>
+	<key>FacebookAppID</key>
+	<string>1172475496758800</string>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<true/>
+	<key>FacebookClientToken</key>
+	<string>c2dddde047bd6a02d05fc13a8235c451</string>
+	<key>FacebookDisplayName</key>
+	<string>MaxBrowser</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+</dict>
+</plist>
