@@ -112,7 +112,13 @@ struct DismissCommand: AppCommand {
         if let screnDelegate = windowScenedelegate?.delegate as? UIWindowSceneDelegate {
             let vc = screnDelegate.window!?.rootViewController
             if let presentVC = vc?.presentedViewController {
-                presentVC.dismiss(animated: true)
+                if let pre = presentVC.presentedViewController {
+                    pre.dismiss(animated: true) {
+                        presentVC.dismiss(animated: true)
+                    }
+                } else {
+                    presentVC.dismiss(animated: true)
+                }
             }
         }
     }

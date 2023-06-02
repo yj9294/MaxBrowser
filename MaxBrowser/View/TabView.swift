@@ -11,6 +11,8 @@ struct TabView: View {
     
     @EnvironmentObject var store: AppStore
     
+    @State var tabShow = true
+    
     let colums:[GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
     var browsers: [Browser] {
@@ -23,6 +25,11 @@ struct TabView: View {
 
     var body: some View {
         VStack{
+            if tabShow {
+                HStack{
+                    NativeView(model: store.state.tabbar.adModel)
+                }.padding(.horizontal, 16).frame(height: 76)
+            }
             ScrollView{
                 LazyVGrid(columns: colums) {
                     ForEach(browsers, id: \.self) { browser in
@@ -87,6 +94,7 @@ struct TabView: View {
             
         }.background(Image("launch_background").resizable().scaledToFill().ignoresSafeArea()).onAppear{
             store.dispatch(.logEvent(.tabShow))
+            store.dispatch(.adLoad(.native, .tab))
         }
     }
 }
@@ -114,8 +122,10 @@ extension TabView {
     }
     
     func back() {
+        tabShow = false
         store.dispatch(.addBrowserObservable)
         store.dispatch(.dismiss)
+        store.dispatch(.adDisappear(.native))
     }
 }
 

@@ -76,7 +76,7 @@ struct HomeView: View {
                     }.padding(.top, 10)
                 }
                 
-                VStack{
+                VStack(spacing: 20){
                     if isNavigation {
                         Image("launch_icon").padding(.top, 60)
                         LazyVGrid(columns: columns, spacing: 20){
@@ -93,6 +93,11 @@ struct HomeView: View {
                                 })
                             }
                         }.padding(.horizontal, 16).padding(.top, 40)
+                        if !tabShow {
+                            HStack{
+                                NativeView(model: store.state.tabbar.adModel)
+                            }.padding(.horizontal, 16).frame(height: 76)
+                        }
                     } else if !tabShow {
                         WebView(webView: browser.webView)
                     }
@@ -129,7 +134,7 @@ struct HomeView: View {
                 .padding(.vertical, 20)
             }.background(Image("launch_background").resizable().scaledToFill().ignoresSafeArea()).onAppear{
                 viewDidLoad()
-        }
+            }.onDisappear(perform: viewDidDisappear)
         }
     }
 }
@@ -146,6 +151,14 @@ extension HomeView {
                 ATTrackingManager.requestTrackingAuthorization { _ in
                 }
             }
+        }
+        store.dispatch(.adLoad(.native))
+        store.dispatch(.adLoad(.interstitial))
+    }
+    
+    func viewDidDisappear() {
+        if !tabShow {
+            store.dispatch(.adDisappear(.native))
         }
     }
     
@@ -193,6 +206,7 @@ extension HomeView {
     func tab() {
         tabShow = true
         store.dispatch(.present(AnyView(TabView().environmentObject(store)), .fullScreen))
+        store.dispatch(.adDisappear(.native))
     }
     
     func setting() {

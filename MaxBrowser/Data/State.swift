@@ -11,12 +11,15 @@ struct AppState {
     var tabbar = TabbarState()
     var home = HomeState()
     var firebase = FirebaseState()
+    var ad = GADState()
 }
 
 struct TabbarState {
     var index: Index = .launch
+    var progress: Double = 0.0
+    var adModel: NativeViewModel = .None
     enum Index {
-        case launch, home
+        case  launch, home
     }
 }
 
@@ -93,5 +96,35 @@ struct FirebaseState {
         case copyClick = "qws_pe"
         case searchBegian = "zxc_pe"
         case searchSuccess = "bnm_pe"
+    }
+}
+
+struct GADState {
+    
+    @UserDefault(key: "state.ad.config")
+    var config: GADConfig?
+   
+    @UserDefault(key: "state.ad.limit")
+    var limit: GADLimit?
+    
+    var impressionDate:[GADPosition.Position: Date] = [:]
+    
+    let ads:[ADLoadModel] = GADPosition.allCases.map { p in
+        ADLoadModel(position: p)
+    }
+    
+    func isLoaded(_ position: GADPosition) -> Bool {
+        return self.ads.filter {
+            $0.position == position
+        }.first?.isLoaded == true
+    }
+
+    func isLimited(in store: AppStore) -> Bool {
+        if limit?.date.isToday == true {
+            if (store.state.ad.limit?.showTimes ?? 0) >= (store.state.ad.config?.showTimes ?? 0) || (store.state.ad.limit?.clickTimes ?? 0) >= (store.state.ad.config?.clickTimes ?? 0) {
+                return true
+            }
+        }
+        return false
     }
 }

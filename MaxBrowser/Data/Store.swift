@@ -15,6 +15,7 @@ class AppStore: ObservableObject {
         dispatch(.logProperty(.local))
         dispatch(.logEvent(.open))
         dispatch(.logEvent(.openCold))
+        dispatch(.adRequestConfig)
     }
     func dispatch(_ action: AppAction) {
         debugPrint("[ACTION]: \(action)")
@@ -32,6 +33,7 @@ extension AppStore{
         var appCommand: AppCommand? = nil
         switch action {
         case .luanching:
+            appState.tabbar.progress = 0
             appState.tabbar.index = .launch
         case .launched:
             appState.tabbar.index = .home
@@ -85,6 +87,30 @@ extension AppStore{
             appCommand = FirebaseEventCommand(event: event, params: params)
         case .logProperty(let property):
             appCommand = FirebasePropertyCommand(property: property)
+            
+        case .adRequestConfig:
+            appCommand = GADRemoteConfigCommand()
+        case .adUpdateConfig(let config):
+            appState.ad.config = config
+        case .adUpdateLimit(let state):
+            appCommand = GADUpdateLimitCommand(state)
+        case .adAppear(let position):
+            appCommand = GADAppearCommand(position)
+        case .adDisappear(let position):
+            appCommand = GADDisappearCommand(position)
+        case .adClean(let position):
+            appCommand = GADCleanCommand(position)
+        
+        case .adLoad(let position, let p):
+            appCommand = GADLoadCommand(position, p)
+        case .adShow(let position, let p, let completion):
+            appCommand = GADShowCommand(position, p, completion)
+            
+        case .adNativeImpressionDate(let p):
+            appState.ad.impressionDate[p] = Date()
+        case .adModel(let model):
+            appState.tabbar.adModel = model
+
         }
         return (appState, appCommand)
     }

@@ -7,20 +7,24 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb1172475496758800</string>
+				<string></string>
 			</array>
 		</dict>
 	</array>
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
 	<true/>
 	<key>FacebookAppID</key>
-	<string>1172475496758800</string>
+	<string></string>
 	<key>FacebookAutoLogAppEventsEnabled</key>
 	<true/>
 	<key>FacebookClientToken</key>
-	<string>c2dddde047bd6a02d05fc13a8235c451</string>
+	<string></string>
 	<key>FacebookDisplayName</key>
 	<string>MaxBrowser</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-7085393336568297~9985902049</string>
+	<key>GADIsAdManagerApp</key>
+	<true/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>

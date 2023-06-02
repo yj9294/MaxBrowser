@@ -9,7 +9,9 @@ import SwiftUI
 
 struct LaunchView: View {
     
-    @State var progress = 0.0
+    @EnvironmentObject var store: AppStore
+        
+    @State var closeAD = false
     
     var launched: (()->Void)? = nil
     
@@ -20,11 +22,12 @@ struct LaunchView: View {
                 Image("launch_title")
             }
             HStack{
-                ProgressView(value: progress, total: 1.0).accentColor(Color("#25C384")).background(Color.clear).padding(.horizontal, 4)
+                ProgressView(value: store.state.tabbar.progress, total: 1.0).accentColor(Color("#25C384")).background(Color.clear).padding(.horizontal, 4).onAppear {
+                    viewDidLoad()
+                }
             }.background(Image("launch_progress_background").resizable().scaledToFill()).padding(.horizontal, 70)
         }.background(Image("launch_background").ignoresSafeArea()).onAppear{
             debugPrint("launching 出现了")
-            viewDidLoad()
         }
     }
 }
@@ -32,23 +35,41 @@ struct LaunchView: View {
 extension LaunchView {
     
     func viewDidLoad() {
+        if closeAD {
+            return
+        }
+        
         let token = SubscriptionToken()
-        let duration = 3.0
+        var duration = 15.0
+        store.state.tabbar.progress = 0.0
+        
         let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
         timer.sink { _ in
-            let progress = progress + 0.01 / duration
+            let progress = store.state.tabbar.progress + 0.01 / duration
             if progress > 1.0 {
-                launched?()
+                store.dispatch(.adShow(.interstitial) { _ in
+                    if store.state.tabbar.progress > 0.9 {
+                        closeAD = true
+                        self.launched?()
+                    }
+                })
                 token.unseal()
             } else {
-                self.progress = progress
+                store.state.tabbar.progress = progress
+            }
+            if progress > 0.3,
+               store.state.ad.isLoaded(.interstitial) {
+                duration = 1.0
             }
         }.seal(in: token)
+        
+        store.dispatch(.adLoad(.interstitial))
+        store.dispatch(.adLoad(.native))
     }
 }
 
 struct LaunchView_Previews: PreviewProvider {
     static var previews: some View {
-        LaunchView()
+        LaunchView().environmentObject(AppStore())
     }
 }
